@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang='en'>
+    
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>{% block title %}Base{% endblock %}</title>
+    
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'/>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css'>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'></script>
+    
+    {% load staticfiles %}
+    
+    <link rel='stylesheet' href='{% static "css/style.css" %}' />
+    
+</head>
+
+<body>
+    
+    <nav class='navbar navbar-default navbar-inverse navbar-fixed-top' role='navigation'>
+        <div class='container'>
+            <div class='navbar-header float-left'>
+                <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='#navbarCollapse'>
+                    <span class='sr-only'>Toggle navigation</span>
+                    <span class='icon-bar'></span>
+                    <span class='icon-bar'></span>
+                    <span class='icon-bar'></span>
+                </button>
+                <a class='navbar-brand' href='/'>Connect</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class='collapse navbar-collapse float-right' id='navbarCollapse'>
+                <ul class='nav navbar-nav'>
+
+                    {% block auth %}
+                    {% if request.user.is_authenticated %}
+                        <li><a href='/profiles/{{ user.id }}' class='dynamic-link'>{{user.username}}</a></li>
+                        <li><a href='/logout?next={{ request.path }}' class='float-right'><span class='glyphicon glyphicon-log-out'></span> Log Out</a></li>
+                    {% else %}
+                        <li><a href='/login?next={{ request.path }}' class='float-right'><span class='glyphicon glyphicon-log-in'></span> Log In</a></li>
+                        <li><a href='/signup?next={{ request.path }}' class='float-right'><span class='glyphicon glyphicon-user'></span> Sign Up</a></li>
+
+                    {% endif %}
+                    {% endblock %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>

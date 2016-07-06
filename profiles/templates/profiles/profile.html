@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<p>{{ profile.user.username }}</p>
+
+{% if profile.bio %}
+    <p>{{ profile.bio }}</p>
+{% else %}
+    <p>This user's profile is blank.</p>
+{% endif %}
+
+{% endblock %}

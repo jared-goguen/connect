@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li>{{ message.tags }}: {{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if profiles %}
+    <ul>
+    {% for profile in profiles %}
+        <li><a href="{{ profile.user.id }}">{{ profile.user.username }}</a>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No profiles found...</p>
+{% endif %}
+
+{% endblock %}
