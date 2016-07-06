@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li>{{ message.tags }}: {{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% load staticfiles %}
+
+<link rel='stylesheet' href='{% static 'games/css/style.css' %}' />
+
+{% if is_turn %}
+    <input id='board-state' type='hidden' value='{{ game.board }}' />
+    <input id='turn-state' type='hidden' value='{{ game.turn }}' />
+    <script src='{% static 'games/js/is_turn.js' %}'></script>  
+{% endif %}
+
+<p>
+    Game {{ game.id }}: {{ game.title }}
+</p>
+
+<p>
+    {% if not game.full %} 
+        {% if user.is_authenticated %}
+            <a href='join?next={{ request.path }}'>Join game</a>
+        {% else %}
+            <a href='/login'>Log in</a>
+        {% endif %}
+    {% else %}
+        <span>Game is full</span>
+    {% endif %}
+</p>
+
+<div id='board' class='board-div'>
+{% for row in board reversed %}
+    <div class='row-div'>
+    {% for cell in row %}
+        <div id='cell-{{ cell.row }}{{ cell.col }}' 
+            class='cell-div cell-{{ cell.value }}'
+            row='{{ cell.row }}' col='{{ cell.col }}'></div>
+    {% endfor %}
+    </div>
+{% endfor %}
+</div>
+
+{% if is_turn %}
+    <form method='post'>
+        {% csrf_token %}
+        <input id='row-state' type='hidden' name='row' value='' />
+        <input id='col-state' type='hidden' name='col' value='' />
+        <input type='submit' class='disabled-button' id='submit-move' value='drop' disabled />
+    </form>
+{% endif %}
+
+<ul>
+{% for player in game.players.all %}
+    <li>{{ player.username }}
+            {% if player == game.next_player %}
+                - TURN
+            {% endif %}
+    </li>
+{% endfor %}
+</ul>
+
+{% endblock %}

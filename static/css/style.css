@@ -1,0 +1,19 @@
+body { 
+    padding-top: 70px; 
+}
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+.dynamic-link {
+    color: #539ad7 !important;
+}
+
+.dynamic-link:hover {
+    color: #ffdd22 !important;
+}

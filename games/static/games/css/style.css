@@ -1,0 +1,38 @@
+.board-div {
+    width: 458px;
+    height: 394px;
+    background-color: #222222;
+    padding: 5px;
+}
+
+.row-div {
+    line-height: 0px;   
+}
+
+.cell-div {
+    width: 60px;
+    height: 60px;
+    margin: 2px;
+    float: left;
+    border-radius: 50%;
+}
+
+.cell--1 {
+    background-color: #FFFFFF;
+}
+
+.cell-0 {
+    background-color: #E6152D;
+}
+
+.cell-1 {
+    background-color: #EDD51F;  
+}
+
+.cell-valid {
+    border: #00FF00 5px solid;
+}
+
+.disabled-button {
+    color: #CCCCCC;
+}
