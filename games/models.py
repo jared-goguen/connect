@@ -64,7 +64,7 @@ class Game(models.Model):
         self.started = True
         shuffle(self.order)
         self.advance_turn()
-        self.save()
+        self.save(force_update=True)
 
     # does not save on it's own...
     def advance_turn(self):
@@ -103,7 +103,7 @@ class Game(models.Model):
 
         self.board[row][col] = self.turn
         self.advance_turn()
-        self.save()
+        self.save(force_update=True)
         return messages.SUCCESS, 'You have made your move!'
 
 
