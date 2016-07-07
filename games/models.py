@@ -64,11 +64,12 @@ class Game(models.Model):
         self.started = True
         shuffle(self.order)
         self.advance_turn()
-        self.save(force_update=True)
+        self.save()
 
     # does not save on it's own...
     def advance_turn(self):
         self.turn = (self.turn + 1) % self.total_players
+        print self.turn, self.order[self.turn], self.players.all()[self.order[self.turn]].pk
         self.next_player = self.players.all()[self.order[self.turn]]
 
     def is_turn(self, user):
@@ -103,7 +104,7 @@ class Game(models.Model):
 
         self.board[row][col] = self.turn
         self.advance_turn()
-        self.save(force_update=True)
+        self.save()
         return messages.SUCCESS, 'You have made your move!'
 
 
