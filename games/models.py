@@ -13,7 +13,7 @@ def get_default_board(rows=6, cols=7):
     return json.dumps([[-1] * cols] * rows)
 
 def get_default_order(players=2):
-    return range(players)
+    return json.dumps(range(players))
 
 class Game(models.Model):
     class Meta:
