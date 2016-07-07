@@ -12,9 +12,6 @@ from random import shuffle
 def get_default_board(rows=6, cols=7):
     return json.dumps([[-1] * cols] * rows)
 
-def get_default_order(players=2):
-    return json.dumps(range(players))
-
 class Game(models.Model):
     class Meta:
         ordering = ('created',)
@@ -29,7 +26,7 @@ class Game(models.Model):
     done = models.BooleanField(default=False)
     title = models.TextField(max_length=30)
     total_players = models.IntegerField(default=2)
-    order = JSONField(default=get_default_order())
+    order = JSONField(blank=True, null=True)
     next_player = models.ForeignKey(User, blank=True, null=True)
 
     @property
@@ -51,7 +48,10 @@ class Game(models.Model):
             return messages.ERROR, 'You are already in Game #{}'.format(self.id)
 
         elif not self.full:
+            if self.order is None:
+                self.order = []
             self.players.add(user)
+            self.order.append(user.pk)
             if self.full:
                 self.start_game()
             self.save()
@@ -68,16 +68,15 @@ class Game(models.Model):
 
     # does not save on it's own...
     def advance_turn(self):
-        print 'original: ', self.turn, self.order[self.turn], self.players.all()[self.order[self.turn]].pk
         self.turn = (self.turn + 1) % self.total_players
-        print 'new     : ', self.turn, self.order[self.turn], self.players.all()[self.order[self.turn]].pk
-        self.next_player = self.players.all()[self.order[self.turn]]
+        pk = self.order[self.turn]
+        self.next_player = self.players.get(pk=pk)
 
     def is_turn(self, user):
-        return user == self.next_player
+        return user.pk == self.next_player.pk
 
     def in_game(self, user):
-        return user in self.players.all()
+        return user.pk in self.order
 
     def can_join(self, user):
         if not self.full:
