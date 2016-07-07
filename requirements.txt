@@ -1,0 +1,4 @@
+dj-database-url==0.4.1
+Django==1.9.7
+django-jsonfield==1.0.0
+whitenoise==3.2
