@@ -68,8 +68,9 @@ class Game(models.Model):
 
     # does not save on it's own...
     def advance_turn(self):
+        print 'original: ', self.turn, self.order[self.turn], self.players.all()[self.order[self.turn]].pk
         self.turn = (self.turn + 1) % self.total_players
-        print self.turn, self.order[self.turn], self.players.all()[self.order[self.turn]].pk
+        print 'new     : ', self.turn, self.order[self.turn], self.players.all()[self.order[self.turn]].pk
         self.next_player = self.players.all()[self.order[self.turn]]
 
     def is_turn(self, user):
