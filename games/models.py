@@ -50,7 +50,8 @@ class Game(models.Model):
             return messages.ERROR, 'You are already in Game #{}'.format(self.id)
 
         elif not self.full:
-            if self.order is None:
+            print self.order
+            if self.order == 'null':
                 self.order = []
             self.players.add(user)
             self.order.append(user.pk)
