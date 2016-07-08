@@ -28,6 +28,8 @@ class Game(models.Model):
     total_players = models.IntegerField(default=2)
     order = JSONField(blank=True, null=True)
     next_player = models.ForeignKey(User, blank=True, null=True)
+    winner = models.ForeignKey(User, blank=True, null=True)
+    connect = models.IntegerField(default=4)
 
     @property
     def status(self):
@@ -94,7 +96,6 @@ class Game(models.Model):
             return False
         return True
 
-
     def make_move(self, user, row, col):
         if not self.is_turn(user):
             return messages.ERROR, 'It is not your turn...'
@@ -103,9 +104,71 @@ class Game(models.Model):
             return messages.ERROR, 'That is not a valid move...'
 
         self.board[row][col] = self.turn
-        self.advance_turn()
-        self.save()
-        return messages.SUCCESS, 'You have made your move!'
+        
+        if self.check_victory():
+            self.assign_victor(self.next_player)
+            self.save()
+            return messages.SUCCESS, 'You won!'
+        elif self.is_full():
+            self.assign_victor(None)
+            self.save()
+            return messages.SUCCESS, 'The game is a draw...'
+        else:
+            self.advance_turn()
+            self.save()
+            return messages.SUCCESS, 'You have made your move!'
+
+    def assign_victor(self, winner):
+        self.done = True
+        self.turn = -1
+        self.winner = winner
+        self.next_player = None
+
+    def is_full(self):
+        for col in self.board[-1]:
+            if col != -1:
+                return False
+        return True
+
+    def check_victory(self):     
+        # check rows 
+        for row in range(self.rows):
+            for col in range(self.cols - self.connect + 1):
+                for check in range(col, col + self.connect):
+                    if self.board[row][check] != self.turn:
+                        break
+                else:
+                    return True
+
+        # check cols 
+        for col in range(self.cols):
+            for row in range(self.rows - self.connect + 1):
+                for check in range(row, row + self.connect):
+                    if self.board[row][check] != self.turn:
+                        break
+                else:
+                    return True
+
+        # check forward diagonal
+        for row in range(self.rows - self.connect + 1):
+            for col in range(self.cols - self.connect + 1):
+                for add in range(self.connect):
+                    if self.board[row + add][col + add] != self.turn:
+                        break
+                else:
+                    return True
+
+        # check backward diagonal
+        for row in range(self.connect - 1, self.rows):
+            for col in range(self.cols - self.connect + 1):
+                for add in range(self.connect):
+                    if self.board[row - add][col + add] != self.turn:
+                        break
+                else:
+                    return True
+
+        return False
+
 
 
 
