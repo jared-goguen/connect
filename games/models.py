@@ -10,7 +10,10 @@ from random import shuffle
 
 
 def get_default_board(rows=6, cols=7):
-    return json.dumps([[-1] * cols] * rows)
+    return [[-1] * cols] * rows
+
+def get_default_order():
+    return []
 
 class Game(models.Model):
     class Meta:
@@ -26,7 +29,7 @@ class Game(models.Model):
     done = models.BooleanField(default=False)
     title = models.TextField(max_length=30)
     total_players = models.IntegerField(default=2)
-    order = JSONField(blank=True, null=True)
+    order = JSONField(default=get_default_order())
     next_player = models.ForeignKey(User, related_name='next_player', blank=True, null=True)
     winner = models.ForeignKey(User, related_name='winner', blank=True, null=True)
     connect = models.IntegerField(default=4)
@@ -50,8 +53,6 @@ class Game(models.Model):
             return messages.ERROR, 'You are already in Game #{}'.format(self.id)
 
         elif not self.full:
-            if self.order is None:
-                self.order = []
             self.players.add(user)
             self.order.append(user.pk)
             if self.full:
