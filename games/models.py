@@ -1,4 +1,4 @@
-import simplejson
+import json
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -10,7 +10,7 @@ from random import shuffle
 
 
 def get_default_board(rows=6, cols=7):
-    return simplejson.dumps([[-1] * cols] * rows)
+    return json.dumps([[-1] * cols] * rows)
 
 class Game(models.Model):
     class Meta:
