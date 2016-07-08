@@ -3,8 +3,8 @@ import json
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin, messages
+from django.contrib.postgres.fields import JSONField
 
-from jsonfield import JSONField
 from itertools import cycle
 from random import shuffle
 
@@ -75,7 +75,9 @@ class Game(models.Model):
         self.next_player = self.players.get(pk=pk)
 
     def is_turn(self, user):
-        return user.pk == self.next_player.pk
+        if self.next_player is not None:
+            return user.pk == self.next_player.pk
+        return False
 
     def in_game(self, user):
         return user.pk in self.order
@@ -126,7 +128,7 @@ class Game(models.Model):
 
     def is_full(self):
         for col in self.board[-1]:
-            if col != -1:
+            if col == -1:
                 return False
         return True
 
@@ -144,7 +146,7 @@ class Game(models.Model):
         for col in range(self.cols):
             for row in range(self.rows - self.connect + 1):
                 for check in range(row, row + self.connect):
-                    if self.board[row][check] != self.turn:
+                    if self.board[check][col] != self.turn:
                         break
                 else:
                     return True

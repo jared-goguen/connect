@@ -83,7 +83,7 @@ class CreateView(TemplateView):
         if form.is_valid():
             game = Game(title=form['title'].value())
             game.save()
-            game.players.add(request.user)
+            game.add_player(request.user)
             game.save()
             return redirect('game-view', game.id)
 
