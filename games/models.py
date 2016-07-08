@@ -27,8 +27,8 @@ class Game(models.Model):
     title = models.TextField(max_length=30)
     total_players = models.IntegerField(default=2)
     order = JSONField(blank=True, null=True)
-    next_player = models.ForeignKey(User, blank=True, null=True)
-    winner = models.ForeignKey(User, blank=True, null=True)
+    next_player = models.ForeignKey(User, related_name='next_player', blank=True, null=True)
+    winner = models.ForeignKey(User, related_name='winner', blank=True, null=True)
     connect = models.IntegerField(default=4)
 
     @property
