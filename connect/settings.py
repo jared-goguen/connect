@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'connect.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'connect',
+        'USER': 'jared',
+        'PASSWORD': 'bananaphone!',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -108,6 +112,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
+LOGIN_REDIRECT_URL = '/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/

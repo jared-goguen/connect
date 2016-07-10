@@ -23,6 +23,11 @@ class ProfileView(TemplateView):
         context = self.get_context_data(**kwargs)
 
         profile = get_object_or_404(Profile, pk=pk)
+
+        user = profile.user
+        active_games = user.next_player.all()
+
         context['profile'] = profile
+        context['active_games'] = active_games
 
         return self.render_to_response(context)

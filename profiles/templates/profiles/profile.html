@@ -2,8 +2,18 @@
 
 {% block content %}
 
-<p>{{ profile.user.username }}</p>
+<p>User: {{ profile.user.username }}</p>
 
+<p>Active games:
+<ul>
+{% for game in active_games %}
+	<li><a href="/games/{{ game.pk }}">{{ game.title }}</a></li>
+{% empty %}
+	<li>No active games...</li>
+{% endfor %}
+</ul>
+
+<p>Profile: </p>
 {% if profile.bio %}
     <p>{{ profile.bio }}</p>
 {% else %}
