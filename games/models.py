@@ -33,6 +33,7 @@ class Game(models.Model):
     next_player = models.ForeignKey(User, related_name='next_player', blank=True, null=True)
     winner = models.ForeignKey(User, related_name='winner', blank=True, null=True)
     connect = models.IntegerField(default=4)
+    full = models.BooleanField(default=False)
 
     @property
     def status(self):
@@ -42,12 +43,6 @@ class Game(models.Model):
             return 'In progress'
         return 'Waiting for players'
 
-    @property
-    def full(self):
-        if self.players.count() == self.total_players:
-            return True
-        return False
-
     def add_player(self, user):
         if user in self.players.all():
             return messages.ERROR, 'You are already in Game #{}'.format(self.id)
@@ -55,13 +50,24 @@ class Game(models.Model):
         elif not self.full:
             self.players.add(user)
             self.order.append(user.pk)
-            if self.full:
+
+            if len(self.players.all()) == self.total_players:
+                self.full = True
                 self.start_game()
+
             self.save()
             return messages.SUCCESS, 'You have successfully joined Game #{}'.format(self.id)
         
         else:
             return messages.ERROR, 'Game is full'
+
+    @classmethod
+    def create_game(cls, user, **kwargs):
+        game = cls(**kwargs)
+        game.save()
+        game.add_player(user)
+        game.save()
+        return game
 
     def start_game(self):
         self.started = True
@@ -88,7 +94,7 @@ class Game(models.Model):
             return user.is_authenticated() and not self.in_game(user)
         return False
 
-    def valid_position(self, row, col):
+    def check_valid_position(self, row, col):
         if row < 0 or row >= self.rows:
             return False
         if col < 0 or col >= self.cols:
@@ -99,11 +105,20 @@ class Game(models.Model):
             return False
         return True
 
+    def get_valid_moves(self):
+        positions = []
+        for col in range(self.cols):
+            for row in range(self.rows):
+                if self.board[row][col] == -1:
+                    positions.append((row, col))
+                    break
+        return positions
+
     def make_move(self, user, row, col):
         if not self.is_turn(user):
             return messages.ERROR, 'It is not your turn...'
         
-        if not self.valid_position(row, col):
+        if not self.check_valid_position(row, col):
             return messages.ERROR, 'That is not a valid move...'
 
         self.board[row][col] = self.turn

@@ -81,10 +81,8 @@ class CreateView(TemplateView):
         form = CreateForm(request.POST)
 
         if form.is_valid():
-            game = Game(title=form['title'].value())
-            game.save()
-            game.add_player(request.user)
-            game.save()
+            game = Game.create_game(request.user, 
+                            title=form['title'].value())
             return redirect('game-view', game.id)
 
         context['form'] = form
