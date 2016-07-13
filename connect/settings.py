@@ -22,6 +22,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ')5hx#l+1ob+p0*v6+l!zg8(27hx845nya%7w7fnw_u=o59$t)$'
 
+
+# Celery settings
+BROKER_URL = 'amqp://jared:bananaphone!@localhost:5672/connect'
+
+#: Only add pickle to this list if your broker is secured
+#: from unwanted access (see userguide/security.html)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+CELERY_IMPORTS = ('profiles.tasks',)
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -40,6 +56,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'games.apps.GamesConfig',
     'profiles.apps.ProfilesConfig',
+    'djcelery',
 ]
 
 MIDDLEWARE_CLASSES = [
