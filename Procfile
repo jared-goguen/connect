@@ -1,2 +1,3 @@
 web: gunicorn connect.wsgi --log-file -
-celery: python manage.py celeryd -c 3 --beat
+worker: python manage.py celeryd
+worker: python manage.py celerybeat
