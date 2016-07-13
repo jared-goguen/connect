@@ -24,7 +24,9 @@ SECRET_KEY = ')5hx#l+1ob+p0*v6+l!zg8(27hx845nya%7w7fnw_u=o59$t)$'
 
 
 # Celery settings
-BROKER_URL = 'amqp://jared:bananaphone!@localhost:5672/connect'
+BROKER_URL = os.environ['RABBITMQ_BIGWIG_URL']
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
 #: Only add pickle to this list if your broker is secured
 #: from unwanted access (see userguide/security.html)
@@ -32,8 +34,7 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
 
 CELERY_IMPORTS = ('profiles.tasks',)
 
